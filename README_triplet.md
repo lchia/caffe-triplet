@@ -8,4 +8,9 @@ This line is modified on the web (git).
 Creating a new branch: triplet
 =======
 Adding a new line in the branch "triplet"
+<<<<<<< HEAD
+>>>>>>> triplet
+=======
+
+Trying push a branch to the web.
 >>>>>>> triplet
