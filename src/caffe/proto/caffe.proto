@@ -403,6 +403,16 @@ message LayerParameter {
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
   optional WindowDataParameter window_data_param = 129;
+
+  // Added by lch: for triplet_loss
+  optional TripletLossParameter triplet_loss_param = 147;
+}
+
+// Added by lch: for triplet_loss
+// Message that stores parameters used to define triplet_loss
+message TripletLossParameter {
+  // margin for dissimilar pair
+  optional float margin = 1 [default = 1.0];
 }
 
 // Message that stores parameters used to apply transformation
