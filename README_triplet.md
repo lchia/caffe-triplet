@@ -14,3 +14,5 @@ Adding a new line in the branch "triplet"
 
 Trying push a branch to the web.
 >>>>>>> triplet
+
+Added branch "triplet_loss"<http://blog.csdn.net/tangwei2014/article/details/46815231> and compiled it successfully.
