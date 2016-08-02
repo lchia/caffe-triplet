@@ -52,20 +52,20 @@ void TripletLossLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   for (int i = 0; i < bottom[0]->num(); ++i) {
       loss += sampleW[i]*std::max(margin + dist_sq_ap_.cpu_data()[i] - dist_sq_an_.cpu_data()[i], Dtype(0.0));
   }
-  loss = loss / static_cast<Dytpe>(bottom[0]->num()) / Dtype(2);
+  loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
   top[0]->mutable_cpu_data()[0] = loss;
 }
 
 template <typename Dtype>
-__global__ voidCLLbackward(const int count, const int channels, 
+__global__ void CLLBackward(const int count, const int channels, 
     const Dtype margin, const Dtype alpha, const Dtype* sampleW, 
-    const Dtype* diff, const Dtype* dist_sq_ap_, const Dtype* dist-sq-an_, 
+    const Dtype* diff, const Dtype* dist_sq_ap_, const Dtype* dist_sq_an_, 
     Dtype* bottom_diff) {
     CUDA_KERNEL_LOOP(i, count) {
         int n = i / channels; // the num index, to access dist_sq_ap_ and dist_sq_an_
         Dtype mdist(0.0);
         if (mdist > 0.0) {
-            bottom_diff[i] = alpha * smapleW[n]*diff[i];
+            bottom_diff[i] = alpha * sampleW[n]*diff[i];
         } else {
             bottom_diff[i] = 0;
         }
@@ -78,7 +78,7 @@ void TripletLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   Dtype margin = this->layer_param_.triplet_loss_param().margin();
   const int count = bottom[0]->count();
-  const int channels =  bottom[0]->channles();
+  const int channels =  bottom[0]->channels();
   
   for (int i = 0; i < 3; ++i) {
     if (propagate_down[i]) {

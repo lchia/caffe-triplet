@@ -27,11 +27,11 @@ void TripletLossLayer<Dtype>::Reshape(
   //vector of ones used to sum along channels
   summer_vec_.Reshape(bottom[0]->channels(), 1,1,1);
   for (int i = 0; i < bottom[0]->channels(); ++i)
-      summer_ver_.mutable_cpu_data()[i] = Dtype(1);
+      summer_vec_.mutable_cpu_data()[i] = Dtype(1);
 
   dist_binary_.Reshape(bottom[0]->count(1), 1,1,1);
   for (int i = 0; i < bottom[0]->count(1); ++i)
-      summer_ver_.mutable_cpu_data()[i] = Dtype(1);
+      summer_vec_.mutable_cpu_data()[i] = Dtype(1);
 }
 
 template <typename Dtype>
@@ -73,7 +73,7 @@ void TripletLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
           caffe_set(channels, Dtype(0), diff_pn_.mutable_cpu_data() + (i*channels));
       }
   }
-  loss = loss / static_cast<Dytpe>(bottom[0]->num()) / Dtype(2);
+  loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
   top[0]->mutable_cpu_data()[0] = loss;
 }
 
@@ -82,7 +82,7 @@ template <typename Dtype>
 void TripletLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   //Dtype margin = this->layer_param_.triplet_loss_param().margin();
-  
+  const Dtype* sampleW = bottom[3]->cpu_data();
   for (int i = 0; i < 3; ++i) {
     if (propagate_down[i]) {
       const Dtype sign = (i < 2) ? 1 : -1;
